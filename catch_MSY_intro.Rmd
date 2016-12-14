@@ -105,6 +105,8 @@ The Catch-MSY method needs three things from the user, with one possible extra p
 
 * A time series of catches. This is used to test the possible values of $r$ and $k$ against the possible values of depletion by running simulations.
 
+* Optionally, we can provide $\sigma \nu$, the standard deviation of the process error.
+
 For an exact description of the steps, see Martell and Froese (2013), but basically, the procedure goes as follows:
 
 1. __Define the lower and upper bounds for depletion at the beginning and end of the time series, $l_0$ and $l_t$__
@@ -169,19 +171,22 @@ catch <- catches$catch
 
 # l0 and lt: a list of argments for initial and final depletion levels, including the lower and upper bounds described above.
 # Since the BSC fishery seems to be a relatively young (lightly depleted) fishery, we choose ranges that are not too close to zero.
-# by default, the algorithm chooses a value of l0 and lt uniformly from these ranges. Set step=0 to use this option. Otherwise, you can explicitly set the discrete steps between the lower and upper bounds for the algorithm to check. For lt, we also need a reference year, which is the year of catch data we use to assess the validity of each r,k pair
+# by default, the algorithm chooses a value of l0 and lt uniformly from these ranges. Set step=0 to use this option. Otherwise, you can explicitly set the discrete steps between the lower and upper bounds for the algorithm to check. For lt, we also need a reference year, which is the year of data we use to assess the validity of each r,k pair. We can choose the maximum year in the dataset + 1 for the reference year.
 
-l0 <- list(low=0.5,high=0.9,step=0)
-lt <- list(low=0.3,high=0.8,step=0,refyr=2014)
+l0 <- list(low=0.7,high=0.95,step=0)
+lt <- list(low=0.3,high=0.7,step=0,refyr=2015)
 
 # sigv defines process error (see the Schaefer model with lognormal error above). For now, we'll just choose zero (no error, deterministic model)
 sigv = 0
 
-# k is a list of the possible values of k, and the statistical distribution from which to draw them. By default, the values of r and k are drawn from a uniform distribution. Following Martell and Froese (for now), we choose values between the maximum catch in the time series, and 100 times the maximum catch.
+# k is a list of the possible values of k, and the statistical distribution from which to draw them. By default, the values of r and k are drawn from a uniform distribution. For now, we'll search between a low of the maximum value in the catch to a high of 3000000 MT.
 k <- list(dist = "unif", low = max(catch), up = 3000000)
 
 # for r, since BSC is an invertebrate it is not on FishBase. However, since invertebrates can be quite productive, we choose a relatively resilient (high) range of possible r values
-r <- list(dist = "unif", low = 0.6, up = 1.5)
+r <- list(dist = "unif", low = 0.2, up = 0.5)
+
+# If we'd like, we can also set a value for M, the natural mortality. Although this doesn't factor into the main management quantity calculations, it allows us to calculate one further value; Umsy, the exploitation rate at MSY.
+M <- list(dist = "unif", low = 0.1, up = 0.3)
 
 # We can leave all the other values at their defaults, for now
 ```
@@ -196,7 +201,7 @@ setwd(paste0(WD,"/catchmsy output"))
 # start the clock
 ptm <- proc.time()
 
-# BSC_catchMSY <- catchmsy(year=year,catch=catch,l0=l0,lt=lt,sigv=0,k=k,r=r) (not run)
+BSC_catchMSY <- catchmsy(year=year,catch=catch,l0=l0,lt=lt,sigv=0,k=k,r=r)
 
 # stop the clock
 proc.time()-ptm
