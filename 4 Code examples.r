@@ -145,9 +145,9 @@ xdata[,3]
 xdata[,2]
 
 #write data to a file
-write.csv(x=xdata, file="temp.csv")
-write.csv(x=xdata, file="tables\\temp.csv")
-write.csv(x=xdata, file="C:\\Users\\Trevor Branch\\Documents\\2013 FISH458 Quantitative\\1 Labs\\Lab 4 Intro to R\\tables")
+#write.csv(x=xdata, file="temp.csv")
+#write.csv(x=xdata, file="tables\\temp.csv")
+#write.csv(x=xdata, file="C:\\Users\\Trevor Branch\\Documents\\2013 FISH458 Quantitative\\1 Labs\\Lab 4 Intro to R\\tables")
 #unreadable code
 for (i in 1:4) {  if(i>3) { print(i) }
 for (j in 1:3) { for (k in 1:3) { if (j>k) print(j) }}}
